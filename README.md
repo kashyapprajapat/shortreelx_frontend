@@ -11,3 +11,4 @@ is a fusion of three powerful words:
 ###### Reel → Represents Instagram Reels, TikTok videos, and other short video formats.
 ###### X → Symbolizes AI, innovation, and limitless possibilities (like SpaceX, OpenAI, etc.).
 
+![Alt Text](./liveimages/Macbook-Air-localhost.png)
