@@ -1,9 +1,13 @@
-import Image from "next/image";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import MainContent from "./components/MainContent";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1>Shortreelx</h1>
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <MainContent />
+      <Footer />
     </div>
   );
 }
