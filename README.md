@@ -20,3 +20,6 @@ is a fusion of three powerful words:
 
 ###### Mobile View
 ![Alt Text](./liveimages/iPhone-12-PRO-localhost.png)
+
+###### Watch view -- under production
+![Alt Text](./liveimages/Apple-Watch-Serie-6-localhost.png)
