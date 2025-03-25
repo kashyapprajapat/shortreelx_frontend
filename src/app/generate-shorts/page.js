@@ -1,68 +1,88 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+const BASE_URL = "https://shortreelx.onrender.com";
+
 export default function GenerateShorts() {
   const [videoFile, setVideoFile] = useState(null);
   const [numberOfShorts, setNumberOfShorts] = useState(1);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const [videoId, setVideoId] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [shorts, setShorts] = useState([]);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type 
-      const allowedTypes = ['video/mp4', 'video/mpeg', 'video/quicktime'];
-      if (allowedTypes.includes(file.type)) {
-        setVideoFile(file);
-        setErrorMessage('');
-      } else {
-        setErrorMessage('Invalid file type. Please upload a valid video file.');
-        setVideoFile(null);
-      }
-    }
+    validateAndSetFile(file);
   };
 
   const handleFileDropped = (event) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
-    if (file) {
-      const allowedTypes = ['video/mp4', 'video/mpeg', 'video/quicktime'];
-      if (allowedTypes.includes(file.type)) {
-        setVideoFile(file);
-        setErrorMessage('');
-      } else {
-        setErrorMessage('Invalid file type. Please upload a valid video file.');
-        setVideoFile(null);
-      }
+    validateAndSetFile(file);
+  };
+
+  const validateAndSetFile = (file) => {
+    const allowedTypes = ["video/mp4", "video/mpeg", "video/quicktime"];
+    if (file && allowedTypes.includes(file.type)) {
+      setVideoFile(file);
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Invalid file type. Please upload a valid video file.");
+      setVideoFile(null);
     }
   };
 
-  const handleGenerateShorts = () => {
-    // Validate inputs before generation
+  const handleGenerateShorts = async () => {
     if (!videoFile) {
-      setErrorMessage('Please upload a video file.');
+      setErrorMessage("Please upload a video file.");
       return;
     }
 
     if (numberOfShorts < 1 || numberOfShorts > 3) {
-      setErrorMessage('Number of shorts must be between 1 and 3.');
+      setErrorMessage("Number of shorts must be between 1 and 3.");
       return;
     }
 
-    // Simulate generation (replace with actual generation logic)
-    alert(`Generating ${numberOfShorts} short(s) from ${videoFile.name}`);
+    try {
+      // Step 1: Upload Video
+      const formData = new FormData();
+      formData.append("video", videoFile);
 
-    // Optional: Reset form after generation
-    // setVideoFile(null);
-    // setNumberOfShorts(1);
-    // setErrorMessage('');
-  };
+      const uploadResponse = await fetch(`${BASE_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-  const preventDragDefault = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+      if (!uploadResponse.ok) throw new Error("Failed to upload video.");
+
+      const uploadData = await uploadResponse.json();
+      setVideoId(uploadData.videoId);
+      setVideoUrl(uploadData.videoUrl);
+
+      console.log("First request finish")
+
+      // Step 2: Generate Shorts
+      const generateResponse = await fetch(`${BASE_URL}/generate-shorts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          videoId: uploadData.videoId,
+          numShorts: numberOfShorts,
+          videoUrl: uploadData.videoUrl,
+        }),
+      });
+
+      if (!generateResponse.ok) throw new Error("Failed to generate shorts.");
+      console.log("second request finish")
+      const generateData = await generateResponse.json();
+      setShorts(generateData.shorts);
+    } catch (error) {
+      setErrorMessage(error.message || "Something went wrong!");
+    }
   };
 
   return (
@@ -91,71 +111,52 @@ export default function GenerateShorts() {
 
           <div className="space-y-6">
             {/* Video Upload Section */}
-            <div 
-              className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"
-              onDragEnter={preventDragDefault}
-              onDragOver={preventDragDefault}
-              onDrop={handleFileDropped}
-            >
-              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">
-                Upload Source Video
-              </h2>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDropped}>
+              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">Upload Source Video</h2>
               <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-                <input 
-                  type="file" 
-                  accept="video/mp4,video/mpeg,video/quicktime"
-                  onChange={handleFileChange}
-                  className="hidden" 
-                  id="videoUpload"
-                />
-                <label 
-                  htmlFor="videoUpload" 
-                  className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors inline-block"
-                >
+                <input type="file" accept="video/*" onChange={handleFileChange} className="hidden" id="videoUpload" />
+                <label htmlFor="videoUpload" className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors inline-block">
                   Select Video
                 </label>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  or drag and drop video file here
-                </p>
-                {videoFile && (
-                  <p className="mt-2 text-sm text-green-600 dark:text-green-400">
-                    Selected file: {videoFile.name}
-                  </p>
-                )}
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">or drag and drop video file here</p>
+                {videoFile && <p className="mt-2 text-sm text-green-600 dark:text-green-400">Selected file: {videoFile.name}</p>}
               </div>
             </div>
 
             {/* Number of Shorts Section */}
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">
-                Number of Shorts
-              </h2>
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
-                  Number of Shorts to Generate (1-3)
-                </label>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max="3" 
-                  value={numberOfShorts}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value);
-                    setNumberOfShorts(
-                      isNaN(value) ? 1 : Math.min(Math.max(value, 1), 3)
-                    );
-                  }}
-                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
-                />
-              </div>
+              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">Number of Shorts</h2>
+              <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">Number of Shorts to Generate (1-3)</label>
+              <input
+                type="number"
+                min="1"
+                max="3"
+                value={numberOfShorts}
+                onChange={(e) => setNumberOfShorts(Math.min(Math.max(parseInt(e.target.value) || 1, 1), 3))}
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+              />
             </div>
 
-            <button 
-              onClick={handleGenerateShorts}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium"
-            >
+            <button onClick={handleGenerateShorts} className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium">
               Generate Short Video(s)
             </button>
+
+            {/* Display Generated Shorts */}
+            {shorts.length > 0 && (
+              <div className="mt-6">
+                <h2 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-200">Generated Shorts</h2>
+                <ul className="space-y-2">
+                  {shorts.map((shortUrl, index) => (
+                    <li key={index} className="flex justify-between items-center p-2 border rounded-md bg-gray-50 dark:bg-gray-700">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Short {index + 1}</span>
+                      <a href={shortUrl} download={`short_${index + 1}.mp4`} className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-md text-sm">
+                        Download
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </main>
