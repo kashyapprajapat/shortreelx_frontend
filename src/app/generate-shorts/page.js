@@ -1,12 +1,74 @@
+"use client"
+import React, { useState } from 'react';
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function GenerateShorts() {
+  const [videoFile, setVideoFile] = useState(null);
+  const [numberOfShorts, setNumberOfShorts] = useState(1);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type 
+      const allowedTypes = ['video/mp4', 'video/mpeg', 'video/quicktime'];
+      if (allowedTypes.includes(file.type)) {
+        setVideoFile(file);
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Invalid file type. Please upload a valid video file.');
+        setVideoFile(null);
+      }
+    }
+  };
+
+  const handleFileDropped = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      const allowedTypes = ['video/mp4', 'video/mpeg', 'video/quicktime'];
+      if (allowedTypes.includes(file.type)) {
+        setVideoFile(file);
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Invalid file type. Please upload a valid video file.');
+        setVideoFile(null);
+      }
+    }
+  };
+
+  const handleGenerateShorts = () => {
+    // Validate inputs before generation
+    if (!videoFile) {
+      setErrorMessage('Please upload a video file.');
+      return;
+    }
+
+    if (numberOfShorts < 1 || numberOfShorts > 3) {
+      setErrorMessage('Number of shorts must be between 1 and 3.');
+      return;
+    }
+
+    // Simulate generation (replace with actual generation logic)
+    alert(`Generating ${numberOfShorts} short(s) from ${videoFile.name}`);
+
+    // Optional: Reset form after generation
+    // setVideoFile(null);
+    // setNumberOfShorts(1);
+    // setErrorMessage('');
+  };
+
+  const preventDragDefault = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-6">
           <Link href="/" className="text-blue-500 hover:underline flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -15,48 +77,84 @@ export default function GenerateShorts() {
             Back to Dashboard
           </Link>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-6">Generate Shorts</h1>
-          
+          <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+            Generate Shorts
+          </h1>
+
+          {errorMessage && (
+            <div className="bg-red-50 dark:bg-red-900 border border-red-300 dark:border-red-700 text-red-800 dark:text-red-200 p-4 rounded-lg mb-4">
+              {errorMessage}
+            </div>
+          )}
+
           <div className="space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h2 className="font-medium mb-3">Upload Source Video</h2>
+            {/* Video Upload Section */}
+            <div 
+              className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"
+              onDragEnter={preventDragDefault}
+              onDragOver={preventDragDefault}
+              onDrop={handleFileDropped}
+            >
+              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">
+                Upload Source Video
+              </h2>
               <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors">
+                <input 
+                  type="file" 
+                  accept="video/mp4,video/mpeg,video/quicktime"
+                  onChange={handleFileChange}
+                  className="hidden" 
+                  id="videoUpload"
+                />
+                <label 
+                  htmlFor="videoUpload" 
+                  className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors inline-block"
+                >
                   Select Video
-                </button>
+                </label>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   or drag and drop video file here
                 </p>
+                {videoFile && (
+                  <p className="mt-2 text-sm text-green-600 dark:text-green-400">
+                    Selected file: {videoFile.name}
+                  </p>
+                )}
               </div>
             </div>
-            
+
+            {/* Number of Shorts Section */}
             <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h2 className="font-medium mb-3">Short Video Options</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Video Aspect Ratio</label>
-                  <select className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800">
-                    <option>9:16 (Vertical/Portrait)</option>
-                    <option>1:1 (Square)</option>
-                    <option>16:9 (Horizontal/Landscape)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Duration (seconds)</label>
-                  <input type="range" min="15" max="60" className="w-full" />
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>15s</span>
-                    <span>60s</span>
-                  </div>
-                </div>
+              <h2 className="font-medium mb-3 text-gray-700 dark:text-gray-300">
+                Number of Shorts
+              </h2>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-gray-600 dark:text-gray-300">
+                  Number of Shorts to Generate (1-3)
+                </label>
+                <input 
+                  type="number" 
+                  min="1" 
+                  max="3" 
+                  value={numberOfShorts}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    setNumberOfShorts(
+                      isNaN(value) ? 1 : Math.min(Math.max(value, 1), 3)
+                    );
+                  }}
+                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                />
               </div>
             </div>
-            
-            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium">
-              Generate Short Video
+
+            <button 
+              onClick={handleGenerateShorts}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium"
+            >
+              Generate Short Video(s)
             </button>
           </div>
         </div>
