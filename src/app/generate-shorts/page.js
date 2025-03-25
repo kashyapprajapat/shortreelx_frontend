@@ -36,6 +36,28 @@ export default function GenerateShorts() {
     }
   };
 
+  const downloadShort = async (shortUrl) => {
+    try {
+      // Fetch the video blob
+      const response = await fetch(shortUrl);
+      const blob = await response.blob();
+      
+      // Create a link element and trigger download
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `short_${Date.now()}.mp4`; // Use timestamp to ensure unique filename
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Download failed:', error);
+      setErrorMessage('Failed to download short video.');
+    }
+  };
+
   const handleGenerateShorts = async () => {
     if (!videoFile) {
       setErrorMessage("Please upload a video file.");
@@ -63,8 +85,6 @@ export default function GenerateShorts() {
       setVideoId(uploadData.videoId);
       setVideoUrl(uploadData.videoUrl);
 
-      console.log("First request finish")
-
       // Step 2: Generate Shorts
       const generateResponse = await fetch(`${BASE_URL}/generate-shorts`, {
         method: "POST",
@@ -77,7 +97,7 @@ export default function GenerateShorts() {
       });
 
       if (!generateResponse.ok) throw new Error("Failed to generate shorts.");
-      console.log("second request finish")
+      
       const generateData = await generateResponse.json();
       setShorts(generateData.shorts);
     } catch (error) {
@@ -149,9 +169,12 @@ export default function GenerateShorts() {
                   {shorts.map((shortUrl, index) => (
                     <li key={index} className="flex justify-between items-center p-2 border rounded-md bg-gray-50 dark:bg-gray-700">
                       <span className="text-sm text-gray-700 dark:text-gray-300">Short {index + 1}</span>
-                      <a href={shortUrl} download={`short_${index + 1}.mp4`} className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-md text-sm">
+                      <button 
+                        onClick={() => downloadShort(shortUrl)} 
+                        className="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-md text-sm"
+                      >
                         Download
-                      </a>
+                      </button>
                     </li>
                   ))}
                 </ul>
