@@ -15,6 +15,13 @@ is a fusion of three powerful words:
 ###### Laptop view
 ![Alt Text](./liveimages/Macbook-Air-localhost.png)
 
+###### Generate shorts Form
+![Alt Text](./liveimages/Generateshorts.png)
+
+##### Download shorts right side top
+![Alt Text](./liveimages/GenerateshortsDownload.png)
+
+
 ###### Tablet View
 ![Alt Text](./liveimages/Galaxy-Tab-S7-localhost.png)
 
@@ -23,3 +30,4 @@ is a fusion of three powerful words:
 
 ###### Watch view -- under production
 ![Alt Text](./liveimages/Apple-Watch-Serie-6-localhost.png)
+
