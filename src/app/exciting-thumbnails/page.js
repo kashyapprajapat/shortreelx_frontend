@@ -10,6 +10,11 @@ export default function GenerateShorts() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [videoId, setVideoId] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [thumbnailUrls, setThumbnailUrls] = useState([]);
+
+  const BASE_URL = "https://shortreelx.onrender.com";
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -19,9 +24,10 @@ export default function GenerateShorts() {
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setError("");
     setSuccessMessage("");
+    setThumbnailUrls([]);
 
     if (!video) {
       setError("Please upload a video.");
@@ -34,10 +40,59 @@ export default function GenerateShorts() {
     }
 
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      // Step 1: Upload Video
+      const formData = new FormData();
+      formData.append("video", video);
+
+      const uploadResponse = await fetch(`${BASE_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Video upload failed.");
+      }
+
+      const uploadData = await uploadResponse.json();
+      setVideoId(uploadData.videoId);
+      setVideoUrl(uploadData.videoUrl);
+
+      
+      // Step 2: Generate Thumbnails
+      const thumbnailsFormData = new FormData();
+      thumbnailsFormData.append("video", video);
+      thumbnailsFormData.append("numThumbnails", thumbnails);
+
+      const thumbnailsResponse = await fetch(`${BASE_URL}/getexcitingthumbnails`, {
+        method: "POST",
+        body: thumbnailsFormData,
+      });
+
+      if (!thumbnailsResponse.ok) {
+        throw new Error("Thumbnail generation failed.");
+      }
+      
+      const thumbnailsData = await thumbnailsResponse.json();
+      setThumbnailUrls(thumbnailsData.thumbnails);
+
+      setSuccessMessage("Video uploaded and thumbnails generated successfully!");
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
       setLoading(false);
-      setSuccessMessage("Video processing started! Check back later.");
-    }, 2000);
+    }
+  };
+
+  const handleDownload = (url) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "thumbnail.jpg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -55,7 +110,7 @@ export default function GenerateShorts() {
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
-          Exciting thumbnail.
+            Generate Exciting Thumbnails
           </h1>
 
           {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
@@ -90,8 +145,27 @@ export default function GenerateShorts() {
             onClick={handleGenerate}
             disabled={loading}
           >
-            {loading ? "Generating..." : "Generate Short Video"}
+            {loading ? "Generating..." : "Generate Exciting Thumbnails"}
           </button>
+
+          {thumbnailUrls.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Generated Thumbnails:</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {thumbnailUrls.map((url, index) => (
+                  <div key={index} className="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg flex flex-col items-center">
+                    <img src={url} alt={`Thumbnail ${index + 1}`} className="w-full rounded-md mb-2" />
+                    <button
+                      onClick={() => handleDownload(url)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
+                    >
+                      Download
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
       <Footer />
