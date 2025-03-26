@@ -11,8 +11,7 @@ export default function GenerateShorts() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [videoId, setVideoId] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [thumbnailUrls, setThumbnailUrls] = useState([]);
+  const [thumbnailData, setThumbnailData] = useState([]);
 
   const BASE_URL = "https://shortreelx.onrender.com";
 
@@ -27,7 +26,7 @@ export default function GenerateShorts() {
   const handleGenerate = async () => {
     setError("");
     setSuccessMessage("");
-    setThumbnailUrls([]);
+    setThumbnailData([]);
 
     if (!video) {
       setError("Please upload a video.");
@@ -57,9 +56,7 @@ export default function GenerateShorts() {
 
       const uploadData = await uploadResponse.json();
       setVideoId(uploadData.videoId);
-      setVideoUrl(uploadData.videoUrl);
 
-      
       // Step 2: Generate Thumbnails
       const thumbnailsFormData = new FormData();
       thumbnailsFormData.append("video", video);
@@ -75,7 +72,7 @@ export default function GenerateShorts() {
       }
       
       const thumbnailsData = await thumbnailsResponse.json();
-      setThumbnailUrls(thumbnailsData.thumbnails);
+      setThumbnailData(thumbnailsData.thumbnails);
 
       setSuccessMessage("Video uploaded and thumbnails generated successfully!");
 
@@ -86,13 +83,24 @@ export default function GenerateShorts() {
     }
   };
 
-  const handleDownload = (url) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "thumbnail.jpg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (thumbnailInfo) => {
+    try {
+      const response = await fetch(thumbnailInfo.url);
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      
+      // Use timestamp or index to name the file uniquely
+      const fileName = `Thumbnail-${thumbnailInfo.timestamp}.jpg`;
+      
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+      setError("Failed to download thumbnail");
+    }
   };
 
   return (
@@ -148,15 +156,16 @@ export default function GenerateShorts() {
             {loading ? "Generating..." : "Generate Exciting Thumbnails"}
           </button>
 
-          {thumbnailUrls.length > 0 && (
+          {thumbnailData.length > 0 && (
             <div className="mt-6">
               <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Generated Thumbnails:</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {thumbnailUrls.map((url, index) => (
+                {thumbnailData.map((thumbnail, index) => (
                   <div key={index} className="bg-gray-200 dark:bg-gray-700 p-4 rounded-lg flex flex-col items-center">
-                    <img src={url} alt={`Thumbnail ${index + 1}`} className="w-full rounded-md mb-2" />
+                    <div className="text-lg font-medium mb-2">Thumbnail {index + 1}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{thumbnail.description}</div>
                     <button
-                      onClick={() => handleDownload(url)}
+                      onClick={() => handleDownload(thumbnail)}
                       className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm"
                     >
                       Download
