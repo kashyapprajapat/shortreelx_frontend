@@ -11,7 +11,7 @@ export default function MainContent() {
     },
     {
       title: "Exciting Thumbnails",
-      description: "Design eye-catching thumbnails that drive clicks",
+      description: "Get eye-catching thumbnails that drive clicks",
       icon: <FaImage className="w-6 h-6" />,
       href: "/exciting-thumbnails",
     },
