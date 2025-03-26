@@ -21,6 +21,12 @@ is a fusion of three powerful words:
 ##### Download shorts right side top
 ![Alt Text](./liveimages/GenerateshortsDownload.png)
 
+###### Get Exciting Thumnails Form
+![Alt Text](./liveimages/excitingthumbnails.png)
+
+##### Download Thumbnails right side top
+![Alt Text](./liveimages/Downlaodthumbnails.png)
+
 
 ###### Tablet View
 ![Alt Text](./liveimages/Galaxy-Tab-S7-localhost.png)
