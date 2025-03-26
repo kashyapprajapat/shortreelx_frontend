@@ -1,12 +1,49 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function GenerateShorts() {
+  const [video, setVideo] = useState(null);
+  const [thumbnails, setThumbnails] = useState(1);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVideo(file);
+      setError("");
+    }
+  };
+
+  const handleGenerate = () => {
+    setError("");
+    setSuccessMessage("");
+
+    if (!video) {
+      setError("Please upload a video.");
+      return;
+    }
+
+    if (thumbnails < 1 || thumbnails > 3) {
+      setError("Please select between 1 and 3 thumbnails.");
+      return;
+    }
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSuccessMessage("Video processing started! Check back later.");
+    }, 2000);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-6">
           <Link href="/" className="text-blue-500 hover:underline flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -15,50 +52,46 @@ export default function GenerateShorts() {
             Back to Dashboard
           </Link>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-6">Generate Shorts</h1>
-          
-          <div className="space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h2 className="font-medium mb-3">Upload Source Video</h2>
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors">
-                  Select Video
-                </button>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  or drag and drop video file here
-                </p>
-              </div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+          Exciting thumbnail.
+          </h1>
+
+          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+          {successMessage && <p className="text-green-500 text-sm text-center mb-4">{successMessage}</p>}
+
+          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4">
+            <h2 className="font-medium mb-2 text-gray-800 dark:text-gray-200">Upload Video</h2>
+            <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+              <input type="file" accept="video/*" onChange={handleVideoUpload} className="hidden" id="videoUpload" />
+              <label htmlFor="videoUpload" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md cursor-pointer transition">
+                {video ? "Change Video" : "Select Video"}
+              </label>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">or drag & drop a video file here</p>
+              {video && <p className="text-sm mt-2 text-green-500">Selected: {video.name}</p>}
             </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <h2 className="font-medium mb-3">Short Video Options</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Video Aspect Ratio</label>
-                  <select className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800">
-                    <option>9:16 (Vertical/Portrait)</option>
-                    <option>1:1 (Square)</option>
-                    <option>16:9 (Horizontal/Landscape)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Duration (seconds)</label>
-                  <input type="range" min="15" max="60" className="w-full" />
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>15s</span>
-                    <span>60s</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium">
-              Generate Short Video
-            </button>
           </div>
+
+          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4">
+            <h2 className="font-medium mb-2 text-gray-800 dark:text-gray-200">Number of Thumbnails</h2>
+            <input
+              type="number"
+              min="1"
+              max="3"
+              value={thumbnails}
+              onChange={(e) => setThumbnails(Number(e.target.value))}
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800"
+            />
+          </div>
+
+          <button
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition font-medium disabled:opacity-50"
+            onClick={handleGenerate}
+            disabled={loading}
+          >
+            {loading ? "Generating..." : "Generate Short Video"}
+          </button>
         </div>
       </main>
       <Footer />
