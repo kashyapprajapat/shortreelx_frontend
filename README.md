@@ -27,6 +27,11 @@ is a fusion of three powerful words:
 ##### Download Thumbnails right side top
 ![Alt Text](./liveimages/Downlaodthumbnails.png)
 
+###### Get Viral Reels Form
+![Alt Text](./liveimages/viralReels.png)
+
+##### Download Viral Reels right side top
+![Alt Text](./liveimages/GenerateViralReels.png)
 
 ###### Tablet View
 ![Alt Text](./liveimages/Galaxy-Tab-S7-localhost.png)
