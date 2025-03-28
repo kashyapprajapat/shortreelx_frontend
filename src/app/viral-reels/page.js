@@ -15,13 +15,29 @@ export default function GenerateShorts() {
   const [videoId, setVideoId] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [reels, setReels] = useState([]);
-  const [aiInsights, setAiInsights] = useState("");
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setVideo(file);
       setError("");
+    }
+  };
+
+  const handleDownloadReel = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `viral_reel_${Date.now()}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      setError("Failed to download reel: " + err.message);
     }
   };
 
@@ -71,22 +87,12 @@ export default function GenerateShorts() {
       if (!generateResponse.ok) throw new Error("Failed to generate reels");
 
       setReels(generateData.reels);
-      setAiInsights(generateData.aiInsights);
       setSuccessMessage("Successfully generated short videos!");
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDownload = (url) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'viral_reel.mp4';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   return (
@@ -145,13 +151,6 @@ export default function GenerateShorts() {
           {reels.length > 0 && (
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Generated Viral Reels</h2>
-              
-              {aiInsights && (
-                <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4">
-                  <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">AI Insights</h3>
-                  <p className="text-blue-700 dark:text-blue-300">{aiInsights}</p>
-                </div>
-              )}
 
               {reels.map((reel, index) => (
                 <div 
@@ -183,7 +182,7 @@ export default function GenerateShorts() {
                   </div>
 
                   <button
-                    onClick={() => handleDownload(reel.url)}
+                    onClick={() => handleDownloadReel(reel.url)}
                     className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md transition mt-3"
                   >
                     Download Reel
