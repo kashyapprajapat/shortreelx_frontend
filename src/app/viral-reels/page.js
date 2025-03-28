@@ -15,6 +15,7 @@ export default function GenerateShorts() {
   const [videoId, setVideoId] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [reels, setReels] = useState([]);
+  const [aiInsights, setAiInsights] = useState("");
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -70,12 +71,22 @@ export default function GenerateShorts() {
       if (!generateResponse.ok) throw new Error("Failed to generate reels");
 
       setReels(generateData.reels);
+      setAiInsights(generateData.aiInsights);
       setSuccessMessage("Successfully generated short videos!");
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownload = (url) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'viral_reel.mp4';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -133,10 +144,50 @@ export default function GenerateShorts() {
 
           {reels.length > 0 && (
             <div className="mt-6">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Download Reels</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Generated Viral Reels</h2>
+              
+              {aiInsights && (
+                <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-4">
+                  <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">AI Insights</h3>
+                  <p className="text-blue-700 dark:text-blue-300">{aiInsights}</p>
+                </div>
+              )}
+
               {reels.map((reel, index) => (
-                <div key={index} className="mt-2">
-                  <a href={reel.url} download className="text-blue-500 hover:underline">Download Reel {index + 1}</a>
+                <div 
+                  key={index} 
+                  className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4 shadow-sm"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-md font-semibold text-gray-800 dark:text-gray-200">Reel {index + 1}</h3>
+                    <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded-full text-xs">
+                      Viral Score: {reel.viralScore}/10
+                    </span>
+                  </div>
+
+                  <h4 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{reel.title}</h4>
+                  <p className="text-gray-600 dark:text-gray-300 mb-3">{reel.description}</p>
+
+                  <div className="mb-3">
+                    <h5 className="font-medium text-gray-700 dark:text-gray-300 mb-1">Hashtags:</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {reel.hashtags.map((tag, tagIndex) => (
+                        <span 
+                          key={tagIndex} 
+                          className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleDownload(reel.url)}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md transition mt-3"
+                  >
+                    Download Reel
+                  </button>
                 </div>
               ))}
             </div>
