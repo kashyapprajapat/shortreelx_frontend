@@ -4,12 +4,17 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+const BASE_URL = "https://shortreelx.onrender.com";
+
 export default function GenerateShorts() {
   const [video, setVideo] = useState(null);
   const [numReels, setNumReels] = useState(1);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
+  const [videoId, setVideoId] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [reels, setReels] = useState([]);
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -31,12 +36,46 @@ export default function GenerateShorts() {
 
     setLoading(true);
     setError("");
-    setSuccessMessage("Generating short videos...");
-    
-    setTimeout(() => {
+    setSuccessMessage("Uploading video...");
+
+    const formData = new FormData();
+    formData.append("video", video);
+
+    try {
+      const uploadResponse = await fetch(`${BASE_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const uploadData = await uploadResponse.json();
+
+      if (!uploadResponse.ok) throw new Error("Failed to upload video");
+
+      setVideoId(uploadData.videoId);
+      setVideoUrl(uploadData.videoUrl);
+      setSuccessMessage("Generating short videos...");
+
+      const generateResponse = await fetch(`${BASE_URL}/generate-viral-reels`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          videoId: uploadData.videoId,
+          videoUrl: uploadData.videoUrl,
+          numReels,
+        }),
+      });
+      const generateData = await generateResponse.json();
+
+      if (!generateResponse.ok) throw new Error("Failed to generate reels");
+
+      setReels(generateData.reels);
+      setSuccessMessage("Successfully generated short videos!");
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-      setSuccessMessage(`Successfully generated ${numReels} short video(s)!`);
-    }, 3000);
+    }
   };
 
   return (
@@ -91,6 +130,17 @@ export default function GenerateShorts() {
           >
             {loading ? "Generating..." : "Generate viral Reels"}
           </button>
+
+          {reels.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Download Reels</h2>
+              {reels.map((reel, index) => (
+                <div key={index} className="mt-2">
+                  <a href={reel.url} download className="text-blue-500 hover:underline">Download Reel {index + 1}</a>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />
