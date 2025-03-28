@@ -3,26 +3,64 @@ import { useState } from "react";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import axios from "axios";
 
 export default function GenerateShorts() {
   const [video, setVideo] = useState(null);
   const [error, setError] = useState("");
+  const [subtitlesResponse, setSubtitlesResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       setVideo(file);
       setError("");
+      setSubtitlesResponse(null);
     }
   };
 
-  const handleGenerateSubtitles = () => {
+  const handleGenerateSubtitles = async () => {
     if (!video) {
       setError("Please upload a video first.");
       return;
     }
-    console.log("Generating subtitles for:", video.name);
-    // Add API call or processing logic here
+
+    setIsLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append('video', video);
+    formData.append('generateStyledVideo', 'false');
+
+    try {
+      const response = await axios.post(
+        'https://shortreelx.onrender.com/generate-subtitles', 
+        formData, 
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      setSubtitlesResponse(response.data);
+    } catch (err) {
+      setError("Failed to generate subtitles. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const downloadFile = (url, filename) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    link.setAttribute('target', '_blank');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   return (
@@ -60,10 +98,33 @@ export default function GenerateShorts() {
           <button 
             onClick={handleGenerateSubtitles} 
             className={`w-full py-2 px-4 mt-4 rounded-md text-white font-semibold transition ${video ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 cursor-not-allowed"}`} 
-            disabled={!video}
+            disabled={!video || isLoading}
           >
-            Generate Subtitles
+            {isLoading ? "Generating..." : "Generate Subtitles"}
           </button>
+
+          {subtitlesResponse && (
+            <div className="mt-6 space-y-4">
+              <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <span className="text-gray-700 dark:text-gray-300">SRT Subtitle File</span>
+                <button 
+                  onClick={() => downloadFile(subtitlesResponse.subtitles.srt, 'subtitles.srt')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                >
+                  Download SRT
+                </button>
+              </div>
+              <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                <span className="text-gray-700 dark:text-gray-300">VTT Subtitle File</span>
+                <button 
+                  onClick={() => downloadFile(subtitlesResponse.subtitles.vtt, 'subtitles.vtt')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+                >
+                  Download VTT
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
       <Footer />
