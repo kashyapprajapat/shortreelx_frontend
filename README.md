@@ -33,6 +33,12 @@ is a fusion of three powerful words:
 ##### Download Viral Reels right side top
 ![Alt Text](./liveimages/GenerateViralReels.png)
 
+###### Get Subtitles Form
+![Alt Text](./liveimages/GenearteSubtitles.png)
+
+##### Download Subtitles File right side top
+![Alt Text](./liveimages/DownloadSubtitlesFile.png)
+
 ###### Tablet View
 ![Alt Text](./liveimages/Galaxy-Tab-S7-localhost.png)
 
