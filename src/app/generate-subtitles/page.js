@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
 
+const BASE_URL = "https://shortreelx.onrender.com";
+
 export default function GenerateShorts() {
   const [video, setVideo] = useState(null);
   const [error, setError] = useState("");
@@ -35,7 +37,7 @@ export default function GenerateShorts() {
 
     try {
       const response = await axios.post(
-        'https://shortreelx.onrender.com/generate-subtitles', 
+       `${BASE_URL}/generate-subtitles`,  
         formData, 
         {
           headers: {
