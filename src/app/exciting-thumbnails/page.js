@@ -13,7 +13,7 @@ export default function GenerateShorts() {
   const [videoId, setVideoId] = useState("");
   const [thumbnailData, setThumbnailData] = useState([]);
 
-  const BASE_URL = "https://shortreelx.onrender.com";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];

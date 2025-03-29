@@ -4,7 +4,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const BASE_URL = "https://shortreelx.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function GenerateShorts() {
   const [videoFile, setVideoFile] = useState(null);
