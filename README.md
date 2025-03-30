@@ -13,7 +13,8 @@ is a fusion of three powerful words:
 
 ---
 
-#### Live vercel Link --> https://shortreelx.vercel.app
+### Live Render.com Link --> https://shortreelx-6l7e.onrender.com/
+### Live vercel Link --> https://shortreelx.vercel.app
 
 ---
 
