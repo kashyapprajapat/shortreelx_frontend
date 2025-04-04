@@ -7,7 +7,7 @@ import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default function GenerateShorts() {
+export default function GenerateSubtitles() {
   const [video, setVideo] = useState(null);
   const [error, setError] = useState("");
   const [subtitlesResponse, setSubtitlesResponse] = useState(null);

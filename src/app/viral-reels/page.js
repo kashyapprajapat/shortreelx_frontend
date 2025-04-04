@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default function GenerateShorts() {
+export default function GenerateViralreels() {
   const [video, setVideo] = useState(null);
   const [numReels, setNumReels] = useState(1);
   const [loading, setLoading] = useState(false);

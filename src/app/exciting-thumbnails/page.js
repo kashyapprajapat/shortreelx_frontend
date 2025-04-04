@@ -4,7 +4,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-export default function GenerateShorts() {
+export default function GenerateExcitingThumbnails() {
   const [video, setVideo] = useState(null);
   const [thumbnails, setThumbnails] = useState(1);
   const [error, setError] = useState("");
