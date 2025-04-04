@@ -1,5 +1,5 @@
 import FeatureCard from "./FeatureCard";
-import { FaVideo, FaImage, FaFire, FaClosedCaptioning } from "react-icons/fa";
+import { FaVideo, FaImage, FaFire, FaClosedCaptioning , FaStar} from "react-icons/fa";
 
 export default function MainContent() {
   const features = [
@@ -10,16 +10,22 @@ export default function MainContent() {
       href: "/generate-shorts",
     },
     {
+      title: "Viral Reels",
+      description: "Produce trending reels that capture audience attention",
+      icon: <FaFire className="w-6 h-6" />,
+      href: "/viral-reels",
+    },
+    {
       title: "Exciting Thumbnails",
       description: "Get eye-catching thumbnails that drive clicks",
       icon: <FaImage className="w-6 h-6" />,
       href: "/exciting-thumbnails",
     },
     {
-      title: "Viral Reels",
-      description: "Produce trending reels that capture audience attention",
-      icon: <FaFire className="w-6 h-6" />,
-      href: "/viral-reels",
+      title: "Enhanced Thumbnails",
+      description: "Create professional thumbnails with Higher Quality",
+      icon: <FaStar className="w-6 h-6" />,
+      href: "/enhanced-thumbnails",
     },
     {
       title: "Generate Subtitles",
