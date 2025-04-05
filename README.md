@@ -17,6 +17,14 @@ is a fusion of three powerful words:
 ### Live vercel Link --> https://shortreelx.vercel.app
 
 ---
+### New Feature Launch 🚀 🔥🎆
+## 1
+![Laptop View](./liveimages/hashtagfeature1.png)
+
+## 2
+![Laptop View](./liveimages/hashtagfeaturenotfication.png)
+
+---
 
 ## Live Demo Images  
 
