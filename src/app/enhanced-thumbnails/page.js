@@ -4,6 +4,8 @@ import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export default function EnhanceThumbnail() {
   const [image, setImage] = useState(null);
   const [error, setError] = useState("");
@@ -61,7 +63,7 @@ export default function EnhanceThumbnail() {
       const formData = new FormData();
       formData.append('image', image);
       
-      const response = await fetch('https://shortreelx.onrender.com/enhanced-thumbnail', {
+      const response = await fetch(`${BASE_URL}/enhanced-thumbnail`, {
         method: 'POST',
         body: formData,
       });
