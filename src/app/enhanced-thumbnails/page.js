@@ -80,14 +80,43 @@ export default function EnhanceThumbnail() {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (enhancedImageUrl) {
-      const link = document.createElement('a');
-      link.href = enhancedImageUrl;
-      link.download = `enhanced-${image.name}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        setIsLoading(true);
+        
+        // Fetch the image as a blob
+        const response = await fetch(enhancedImageUrl);
+        if (!response.ok) {
+          throw new Error('Failed to download image');
+        }
+        
+        const blob = await response.blob();
+        
+        // Create object URL from blob
+        const objectUrl = URL.createObjectURL(blob);
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = `enhanced-${image.name}`;
+        link.style.display = 'none';
+        
+        // Add to body, click, then clean up
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(objectUrl);
+          setIsLoading(false);
+        }, 100);
+        
+      } catch (err) {
+        setError('Failed to download image. Please try again.');
+        setIsLoading(false);
+      }
     }
   };
 
