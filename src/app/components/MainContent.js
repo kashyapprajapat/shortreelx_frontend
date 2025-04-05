@@ -1,5 +1,5 @@
 import FeatureCard from "./FeatureCard";
-import { FaVideo, FaImage, FaFire, FaClosedCaptioning , FaStar} from "react-icons/fa";
+import { FaVideo, FaImage, FaFire, FaClosedCaptioning , FaStar, FaHashtag} from "react-icons/fa";
 
 export default function MainContent() {
   const features = [
@@ -32,6 +32,12 @@ export default function MainContent() {
       description: "Add accurate, well-timed subtitles to your videos",
       icon: <FaClosedCaptioning className="w-6 h-6" />,
       href: "/generate-subtitles",
+    },
+    {
+      title: "Hashtag Generator",
+      description: "Generate high-trending hashtags for YouTube, TikTok, and Instagram",
+      icon: <FaHashtag className="w-6 h-6" />,
+      href: "/hashtag-generator",
     },
   ];
 
