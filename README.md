@@ -31,6 +31,10 @@ is a fusion of three powerful words:
 ![Laptop View](./liveimages/HashtagForm.png)
 
 ---
+## 4 Glimpls of hashtag Generator response
+![Laptop View](./liveimages/hastaggenerato.png)
+
+---
 
 ## Live Demo Images  
 
