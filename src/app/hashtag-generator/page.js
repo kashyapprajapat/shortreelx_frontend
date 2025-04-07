@@ -227,6 +227,12 @@ export default function HashtagGenerator() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [responseData, setResponseData] = useState(null);
+  const [copyButtonStates, setCopyButtonStates] = useState({
+    youtube: false,
+    tiktok: false,
+    instagram: false,
+    all: false
+  });
 
   const handleFileUpload = (e) => {
     const selectedFile = e.target.files[0];
@@ -335,18 +341,44 @@ export default function HashtagGenerator() {
     }
   };
 
+  const handleCopyPlatformHashtags = (platform) => {
+    if (responseData && responseData.hashtags && responseData.hashtags[platform]) {
+      const platformHashtags = responseData.hashtags[platform].join(' ');
+      navigator.clipboard.writeText(platformHashtags)
+        .then(() => {
+          // Set this specific button state to true (showing checkmark)
+          setCopyButtonStates(prev => ({ ...prev, [platform]: true }));
+          
+          // Reset button state after 2 seconds
+          setTimeout(() => {
+            setCopyButtonStates(prev => ({ ...prev, [platform]: false }));
+          }, 2000);
+        })
+        .catch(err => {
+          console.error("Failed to copy text: ", err);
+          setError("Failed to copy hashtags to clipboard");
+        });
+    }
+  };
+
   const handleCopyAllHashtags = () => {
     if (responseData && responseData.hashtags) {
       // Flatten all hashtags from all platforms into a single string
       const allHashtags = Object.values(responseData.hashtags).flat().join(' ');
-      navigator.clipboard.writeText(allHashtags);
-    }
-  };
-
-  const handleCopyPlatformHashtags = (platform) => {
-    if (responseData && responseData.hashtags && responseData.hashtags[platform]) {
-      const platformHashtags = responseData.hashtags[platform].join(' ');
-      navigator.clipboard.writeText(platformHashtags);
+      navigator.clipboard.writeText(allHashtags)
+        .then(() => {
+          // Set the "all" button state to true
+          setCopyButtonStates(prev => ({ ...prev, all: true }));
+          
+          // Reset button state after 2 seconds
+          setTimeout(() => {
+            setCopyButtonStates(prev => ({ ...prev, all: false }));
+          }, 2000);
+        })
+        .catch(err => {
+          console.error("Failed to copy text: ", err);
+          setError("Failed to copy hashtags to clipboard");
+        });
     }
   };
 
@@ -459,10 +491,21 @@ export default function HashtagGenerator() {
                           onClick={() => handleCopyPlatformHashtags(platform)}
                           className="bg-white bg-opacity-20 hover:bg-opacity-30 text-sm text-white py-1 px-3 rounded-md transition flex items-center"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                          Copy
+                          {copyButtonStates[platform] ? (
+                            <>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                              Copy
+                            </>
+                          )}
                         </button>
                       </h4>
                     </div>
@@ -481,10 +524,21 @@ export default function HashtagGenerator() {
                 onClick={handleCopyAllHashtags}
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-md transition flex items-center mx-auto"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                Copy All Hashtags
+                {copyButtonStates.all ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Copied All Hashtags!
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy All Hashtags
+                  </>
+                )}
               </button>
             </div>
           )}
