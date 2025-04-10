@@ -45,8 +45,8 @@ is a fusion of three powerful words:
 | **Download Shorts (Top Right)** | ![Download Shorts](./liveimages/GenerateshortsDownload.png) |
 | **Get Exciting Thumbnails Form** | ![Exciting Thumbnails](./liveimages/excitingthumbnails.png) |
 | **Download Thumbnails (Top Right)** | ![Download Thumbnails](./liveimages/Downlaodthumbnails.png) |
-| **Enhanced Thumbnail Form** | ![Download Thumbnails](./liveimages/Downlaodthumbnails.png) |
-| **Download Enhanced Thumbnail** | ![Download Thumbnails](./liveimages/Downlaodthumbnails.png) |
+| **Enhanced Thumbnail Form** | ![Download Thumbnails](./liveimages/EnhancedThumbnailForm.png) |
+| **Download Enhanced Thumbnail** | ![Download Thumbnails](./liveimages/EnhancedThumbnailDownload.png) |
 | **Get Viral Reels Form** | ![Viral Reels Form](./liveimages/viralReels.png) |
 | **Download Viral Reels (Top Right)** | ![Download Viral Reels](./liveimages/GenerateViralReels.png) |
 | **Get Subtitles Form** | ![Generate Subtitles](./liveimages/GenearteSubtitles.png) |
