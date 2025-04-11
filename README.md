@@ -40,7 +40,7 @@ is a fusion of three powerful words:
 
 | **Feature** | **Preview** |
 |------------|------------|
-| **Laptop View** | ![Laptop View](./liveimages/Macbook-Air-localhost.png) |
+| **Laptop View** | ![Laptop View](./liveimages/6serviceView.png) |
 | **Generate Shorts Form** | ![Generate Shorts Form](./liveimages/Generateshorts.png) |
 | **Download Shorts (Top Right)** | ![Download Shorts](./liveimages/GenerateshortsDownload.png) |
 | **Get Exciting Thumbnails Form** | ![Exciting Thumbnails](./liveimages/excitingthumbnails.png) |
