@@ -13,6 +13,7 @@ export default function GenerateShorts() {
   const [videoId, setVideoId] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [shorts, setShorts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
@@ -70,6 +71,8 @@ export default function GenerateShorts() {
     }
 
     try {
+      setIsLoading(true);
+      
       // Step 1: Upload Video
       const formData = new FormData();
       formData.append("video", videoFile);
@@ -102,6 +105,8 @@ export default function GenerateShorts() {
       setShorts(generateData.shorts);
     } catch (error) {
       setErrorMessage(error.message || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,8 +162,18 @@ export default function GenerateShorts() {
               />
             </div>
 
-            <button onClick={handleGenerateShorts} className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md transition-colors font-medium">
-              Generate Short Video(s)
+            <button 
+              onClick={handleGenerateShorts} 
+              disabled={!videoFile || isLoading}
+              className={`w-full py-3 rounded-md transition-colors font-medium ${
+                !videoFile 
+                  ? "bg-gray-400 cursor-not-allowed text-gray-200" 
+                  : isLoading 
+                    ? "bg-blue-400 cursor-wait text-white"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+              }`}
+            >
+              {isLoading ? "Generating, please wait..." : "Generate Short Video(s)"}
             </button>
 
             {/* Display Generated Shorts */}
