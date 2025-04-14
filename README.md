@@ -19,9 +19,6 @@ is a fusion of three powerful words:
 ---
 ### New Feature Launch 🚀 🔥🎆
 ## 1
-![Laptop View](./liveimages/hashtagfeature1.png)
-
-## 2
 ![Laptop View](./liveimages/hashtagfeaturenotfication.png)
 
 ---
@@ -56,3 +53,4 @@ is a fusion of three powerful words:
 | **Watch View (Under Production)** | ![Watch View](./liveimages/Apple-Watch-Serie-6-localhost.png) |
 
 ---
+![Laptop View](./liveimages/hashtagfeature1.png)
