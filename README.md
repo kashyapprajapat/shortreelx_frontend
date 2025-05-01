@@ -17,21 +17,7 @@ is a fusion of three powerful words:
 ### Live vercel Link --> https://shortreelx.vercel.app
 
 ---
-### New Feature Launch 🚀 🔥🎆
-## 1
-![Laptop View](./liveimages/hashtagfeaturenotfication.png)
 
----
-
-### Glimpls of hashtag Generator 
-## 3
-![Laptop View](./liveimages/HashtagForm.png)
-
----
-## 4 Glimpls of hashtag Generator response
-![Laptop View](./liveimages/hastaggenerato.png)
-
----
 
 ## Live Demo Images  
 
@@ -48,9 +34,32 @@ is a fusion of three powerful words:
 | **Download Viral Reels (Top Right)** | ![Download Viral Reels](./liveimages/GenerateViralReels.png) |
 | **Get Subtitles Form** | ![Generate Subtitles](./liveimages/GenearteSubtitles.png) |
 | **Download Subtitles File (Top Right)** | ![Download Subtitles](./liveimages/DownloadSubtitlesFile.png) |
+| **Get Hashtag Form** | ![Download Subtitles](./liveimages/HashtagForm.png) |
+| **Get all Hashtags Copy & paste** | ![Download Subtitles](./liveimages/hastaggenerato.png) |
 | **Tablet View** | ![Tablet View](./liveimages/Galaxy-Tab-S7-localhost.png) |
 | **Mobile View** | ![Mobile View](./liveimages/iPhone-12-PRO-localhost.png) |
 | **Watch View (Under Production)** | ![Watch View](./liveimages/Apple-Watch-Serie-6-localhost.png) |
 
 ---
 ![Laptop View](./liveimages/hashtagfeature1.png)
+
+
+
+-------
+-------
+
+### New Feature Launch 🚀 🔥🎆
+## 1
+![Laptop View](./liveimages/hashtagfeaturenotfication.png)
+
+---
+
+### Glimpls of hashtag Generator 
+## 3
+![Laptop View](./liveimages/HashtagForm.png)
+
+---
+## 4 Glimpls of hashtag Generator response
+![Laptop View](./liveimages/hastaggenerato.png)
+
+---
